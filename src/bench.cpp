@@ -1,7 +1,7 @@
 #include <functional>
 #include "tools.hpp"
-#include "naive_dictionary.hpp"
-#include "naive_async_dictionary.hpp"
+#include "dictionary.hpp"
+#include "async_dictionary.hpp"
 
 #include <benchmark/benchmark.h>
 
@@ -29,7 +29,7 @@ std::unique_ptr<Scenario> BMScenario::m_scenario;
 
 BENCHMARK_DEFINE_F(BMScenario, Naive_NoAsync)(benchmark::State& st)
 {
-  naive_dictionary dic;
+  dictionary dic;
   m_scenario->prepare(dic);
 
   for (auto _ : st)
@@ -40,7 +40,7 @@ BENCHMARK_DEFINE_F(BMScenario, Naive_NoAsync)(benchmark::State& st)
 
 BENCHMARK_DEFINE_F(BMScenario, Naive_Async)(benchmark::State& st)
 {
-  naive_async_dictionary dic;
+  async_dictionary dic;
   m_scenario->prepare(dic);
 
   for (auto _ : st)
