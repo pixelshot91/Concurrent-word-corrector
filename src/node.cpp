@@ -2,7 +2,7 @@
 #include <iostream>
 
 Node::Node (std::string str)
-	: s(str)
+	: s(str), eow(false)
 {
 	//std::cout << "New node : " << s << std::endl;
 }
@@ -32,15 +32,17 @@ void Node::lv(lv_ctx& lv_ctx) const
 		std::string node_str = "-" + s;
 		auto& prec_line = array[l - 1];
 		for (auto c = 1; c < lv_ctx.width; c++) {
-			int cost = (node_str.back() != lv_ctx.query[c]);
+			int cost = (node_str[l] != lv_ctx.query[c]);
 			int min = std::min(
 				std::min(prec_line[c] + 1,
 				line[c - 1] + 1),
 				prec_line[c - 1] + cost
 			);
 			if (l > 1 && c > 1 &&
-					node_str[l] == lv_ctx.query[c-1] &&	node_str[l-1] == lv_ctx.query[l])
+					node_str[l] == lv_ctx.query[c-1] &&	node_str[l-1] == lv_ctx.query[c]) {
+				//std::cout << "SWAP possible" << std::endl;
 				min = std::min(min, array[l - 2][c - 2] + cost);
+			}
 			line[c] = min;
 		}
 	}
