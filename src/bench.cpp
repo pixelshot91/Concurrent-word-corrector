@@ -6,14 +6,17 @@
 #include "async_dictionary.hpp"
 
 #include <benchmark/benchmark.h>
+#include <ctime>
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 #define PASTER(x,y) x ## y
 #define EVALUATOR(x,y)  PASTER(x,y)
-#define DIC EVALUATOR(VERSION, dictionary)
 
-constexpr int NQUERIES = 10;
+#define DIC EVALUATOR(VERSION, dictionary)
+#define ASYNC_DIC EVALUATOR(VERSION, async_dictionary)
+
+constexpr int NQUERIES = 50;
 
 class BMScenario : public ::benchmark::Fixture
 {
@@ -33,7 +36,7 @@ protected:
 
 std::unique_ptr<Scenario> BMScenario::m_scenario;
 
-BENCHMARK_DEFINE_F(BMScenario, Optimized_NoAsync)(benchmark::State& st)
+BENCHMARK_DEFINE_F(BMScenario, NoAsync)(benchmark::State& st)
 {
 	DIC dic;
   m_scenario->prepare(dic);
@@ -41,12 +44,14 @@ BENCHMARK_DEFINE_F(BMScenario, Optimized_NoAsync)(benchmark::State& st)
   for (auto _ : st)
     m_scenario->execute(dic);
 
+	//std::cout << "Counter = " << dic.counter << std::endl;
+
   st.SetItemsProcessed(st.iterations() * NQUERIES);
 }
 
-BENCHMARK_DEFINE_F(BMScenario, Optimized_Async)(benchmark::State& st)
+BENCHMARK_DEFINE_F(BMScenario, Async)(benchmark::State& st)
 {
-  DIC dic;
+  ASYNC_DIC dic;
   m_scenario->prepare(dic);
 
   for (auto _ : st)
@@ -55,9 +60,11 @@ BENCHMARK_DEFINE_F(BMScenario, Optimized_Async)(benchmark::State& st)
   st.SetItemsProcessed(st.iterations() * NQUERIES);
 }
 
-/*BENCHmARK_DEFINE_F()
+BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 {
 	using namespace std::placeholders;
+
+	std::srand(std::time(nullptr));
 
   std::vector<std::string> data = load_word_list();
   std::size_t n = 1000;
@@ -67,26 +74,50 @@ BENCHMARK_DEFINE_F(BMScenario, Optimized_Async)(benchmark::State& st)
   // 2 threads Remove B
   // 2 threads Insert C
 
-  dictionary dic(data.begin(), data.begin() + 4 * n);
+  DIC dic(data.begin(), data.begin() + n);
 
-  std::thread t[6];
+	int nb_threads = 4; // nb thread per tasks (search, insert, erase)
+  std::vector<std::thread> threads;
 
-  t[0] = std::thread([&dic,&data,n]() { std::for_each(data.begin() + 0 * n, data.begin() + 1 * n, std::bind(&IDictionary::search, &dic, _1)); });
-  t[1] = std::thread([&dic,&data,n]() { std::for_each(data.begin() + 1 * n, data.begin() + 2 * n, std::bind(&IDictionary::search, &dic, _1)); });
+	for (auto _ : st) {
+		for (auto n = 0; n < nb_threads; n++)
+			threads.emplace_back([&dic,&data,n]() 
+			{
+				//std::for_each(data.begin() + 0 * n, data.begin() + 1 * n, std::bind(&IDictionary::search, &dic, _1));
+				for (size_t i = 0; i < NQUERIES*70/100; i++) {
+					size_t index = std::rand() % data.size();
+					dic.search(data[index]);
+				}
+			});
+		for (auto n = 0; n < nb_threads; n++)
+			threads.emplace_back([&dic,&data,n]() 
+			{
+				//std::for_each(data.begin() + 0 * n, data.begin() + 1 * n, std::bind(&IDictionary::search, &dic, _1));
+				for (size_t i = 0; i < NQUERIES*15/100; i++) {
+					size_t index = std::rand() % data.size();
+					dic.insert(data[index]);
+				}
+			});
+		for (auto n = 0; n < nb_threads; n++)
+			threads.emplace_back([&dic,&data,n]() 
+			{
+				//std::for_each(data.begin() + 0 * n, data.begin() + 1 * n, std::bind(&IDictionary::search, &dic, _1));
+				for (size_t i = 0; i < NQUERIES*15/100; i++) {
+					size_t index = std::rand() % data.size();
+					dic.erase(data[index]);
+				}
+			});
 
-  t[2] = std::thread([&dic,&data, n]() { std::for_each(data.begin() + 2 * n, data.begin() + 3 * n, std::bind(&IDictionary::erase, &dic, _1)); });
-  t[3] = std::thread([&dic,&data, n]() { std::for_each(data.begin() + 3 * n, data.begin() + 4 * n, std::bind(&IDictionary::erase, &dic, _1)); });
-
-  t[4] = std::thread([&dic,&data, n]() { std::for_each(data.begin() + 4 * n, data.begin() + 5 * n, std::bind(&IDictionary::insert, &dic, _1)); });
-  t[5] = std::thread([&dic,&data, n]() { std::for_each(data.begin() + 5 * n, data.begin() + 6 * n, std::bind(&IDictionary::insert, &dic, _1)); });
-
-  for (int i = 0; i < 6; ++i)
-    t[i].join();
+		for (auto& t : threads)
+			t.join();
+	}
+	//std::cout << "Counter = " << dic.counter << std::endl;
 	
-  st.SetItemsProcessed(st.iterations() * NQUERIES);
-}*/
+  st.SetItemsProcessed(st.iterations() * NQUERIES * nb_threads);
+}
 
-BENCHMARK_REGISTER_F(BMScenario, Optimized_NoAsync)->Unit(benchmark::kMillisecond);
-BENCHMARK_REGISTER_F(BMScenario, Optimized_Async)->Unit(benchmark::kMillisecond);
+//BENCHMARK_REGISTER_F(BMScenario, NoAsync)->Unit(benchmark::kMillisecond);
+//BENCHMARK_REGISTER_F(BMScenario, Async)->Unit(benchmark::kMillisecond);
+BENCHMARK_REGISTER_F(BMScenario, NoAsync_MT)->Unit(benchmark::kMillisecond)->UseRealTime();
 
 BENCHMARK_MAIN();

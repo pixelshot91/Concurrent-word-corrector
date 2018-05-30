@@ -5,6 +5,8 @@
 #include <mutex>
 #include <vector>
 #include <iostream>
+#include <condition_variable>
+#include <atomic>
 
 class dictionary : public IDictionary
 {
@@ -21,15 +23,19 @@ public:
   void          insert(const std::string& w) final;
   void          erase(const std::string& w) final;
 
+	mutable size_t counter;
 private:
 	bool exist(const std::string& w) const;
 
   std::shared_ptr<Node> trie;
 	mutable std::mutex m;
+	mutable std::atomic<int> reader;
+	mutable std::condition_variable cv;
 };
 
 template <class Iterator>
 dictionary::dictionary(Iterator begin, Iterator end)
+	: counter(0), reader(0)
 {
 	trie = std::make_shared<Node>("");
 	for (auto it = begin; it != end; it++) {

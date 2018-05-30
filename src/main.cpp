@@ -36,7 +36,7 @@ int main()
   auto r2 = scn.execute(dic);
 
 	bool ok = true;
-	
+
 	if (r1.size() != r2.size()) {
 		std::cout << "DIFFERENT SIZES" << std::endl;
 		ok = false;
@@ -48,6 +48,8 @@ int main()
 			ok = false;
 		}
 	}
+	
+	std::cout << "counter syn = " << dic.counter << std::endl;
 
 	return !ok;
 }

@@ -57,11 +57,19 @@ void Node::lv(lv_ctx& lv_ctx) const
 			lv_ctx.distance = dist;
 		}
 	}
-
-	for (auto& c : child) {
-		if (c.get())
-			c->lv(lv_ctx);
+	
+	/*auto node_size = s.size();
+	auto query_size = lv_ctx.query.size()-1;
+	
+	if (node_size > query_size && node_size - query_size > lv_ctx.distance)
+	{
 	}
+	else {*/
+		for (auto& c : child) {
+			if (c.get())
+				c->lv(lv_ctx);
+		}
+	//}
 
 	array.pop_back();
 }

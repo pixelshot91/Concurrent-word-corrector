@@ -2,6 +2,7 @@
 #include "tools.hpp"
 
 dictionary::dictionary(const std::initializer_list<std::string>& init)
+	: counter(0), reader(0)
 {
 	trie = std::make_shared<Node>("");
 	for (const std::string& s : init)
@@ -20,10 +21,19 @@ void dictionary::init(const std::vector<std::string>& word_list)
 
 result_t dictionary::search(const std::string& query) const
 {
-  std::lock_guard l(m);
+	{
+		std::lock_guard l(m);
+		reader++;
+	}
+	//counter++;
 
 	// Direct search
 	if (exist(query)) {
+		{
+			std::lock_guard l(m);
+			reader--;
+		}
+		cv.notify_all();
 		return {query, 0};
 	}
 
@@ -36,21 +46,36 @@ result_t dictionary::search(const std::string& query) const
 	int width = query.size() + 1;
 	lv_ctx ctx = {"-" + query, lv_array, width, best, distance};
 	trie->lv(ctx);
-  
+ 
+	//std::cout << "serach: " << ctx.best << std::endl;
+	{
+		std::lock_guard l(m);
+		reader--;
+	}
+	cv.notify_all();
+
   return {ctx.best, ctx.distance};
 }
 
 
 void dictionary::insert(const std::string& w)
 {
-  std::lock_guard l(m);
+	std::cout << "Wait for insert " << w << std::endl;
+  std::unique_lock l(m);
+	cv.wait(l, [this] { return this->reader == 0; });
+	//counter++;
 	trie->insert(w.data());
+	std::cout << "Inserted : " << w << std::endl;
 }
 
 void dictionary::erase(const std::string& w)
 {
-  std::lock_guard l(m);
+	std::cout << "Wait for erase " << w << std::endl;
+  std::unique_lock l(m);
+	cv.wait(l, [this] { return this->reader == 0; });
+	//counter++;
   trie->erase(w.data());
+	std::cout << "Erased : " << w << std::endl;
 }
 
 bool dictionary::exist(const std::string& w) const

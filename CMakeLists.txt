@@ -8,7 +8,7 @@ find_package(benchmark REQUIRED)
 find_package(GTest)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-W -Wall")
+set(CMAKE_CXX_FLAGS "-W -Wall -pthread")
 set(CMAKE_CXX_FLAGS_DEBUG "-fsanitize=thread -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 

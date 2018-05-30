@@ -332,5 +332,6 @@ std::ostream& operator<<(std::ostream& os, const Scenario& sc)
 	for (auto&& q : sc.m_impl->queries) {
 		os << q << std::endl;
 	}
+	os << "END QUERIES" << std::endl;
 	return os;
 }
