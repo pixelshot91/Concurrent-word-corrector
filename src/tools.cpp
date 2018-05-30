@@ -63,10 +63,6 @@ std::vector<std::string> load_word_list(const char* filename, bool shuffle)
   return data;
 }
 
-
-
-
-
 struct query
 {
   enum op_type
@@ -78,7 +74,26 @@ struct query
 
   op_type     op;
   std::string arg;
+
+	friend std::ostream& operator<<(std::ostream& os, const query& q);
 };
+
+std::ostream& operator<<(std::ostream& os, const query& q)
+{
+	switch(q.op) {
+		case query::op_type::search:
+			os << "S";
+			break;
+		case query::op_type::insert:
+			os << "I";
+			break;
+		case query::op_type::erase:
+			os << "D";
+			break;
+	}
+	os << " " << q.arg;
+	return os;
+}
 
 
 struct Scenario::scenario_impl_t
@@ -86,7 +101,6 @@ struct Scenario::scenario_impl_t
   std::vector<std::string> init_word_list;
   std::vector<query> queries;
 };
-
 
 Scenario::Scenario()
   : m_impl(std::make_unique<scenario_impl_t>())
@@ -99,7 +113,6 @@ Scenario::~Scenario()
 
 namespace
 {
-
   std::string word_modify(const std::string& s, std::mt19937& gen)
   {
     std::string res;
@@ -306,4 +319,18 @@ std::vector<result_t> Scenario::execute(IAsyncDictionary& dic) const
     search_buffer_pos = (search_buffer_pos + 1) % SEARCH_BUFFER_SIZE;
   }
   return results;
+}
+
+std::ostream& operator<<(std::ostream& os, const Scenario& sc)
+{
+	os << "INIT" << std::endl;
+	for (const std::string& s : sc.m_impl->init_word_list)
+		os << s << std::endl;
+	
+	os << std::endl << "QUERIES" << std::endl;
+  
+	for (auto&& q : sc.m_impl->queries) {
+		os << q << std::endl;
+	}
+	return os;
 }

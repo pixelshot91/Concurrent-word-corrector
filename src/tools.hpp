@@ -36,6 +36,8 @@ public:
 
   void execute_verbose(IDictionary& dic) const;
 
+	friend std::ostream& operator<<(std::ostream& os, const Scenario& sc);
+
 private:
   struct scenario_impl_t;
   std::unique_ptr<scenario_impl_t> m_impl;
