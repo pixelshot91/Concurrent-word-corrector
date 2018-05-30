@@ -78,11 +78,11 @@ TEST(Dictionary, SimpleScenario)
 
 // A long scenario, check that the async dictionary as the
 // same output as the blocking one
-/*TEST(Dictionary, LongScenario)
+TEST(Dictionary, LongScenario)
 {
   std::vector<std::string> word_list = load_word_list();
   //word_list.resize(100000);
-  word_list.resize(10);
+  word_list.resize(1000);
 
   Scenario scn(word_list, 512);
 
@@ -95,4 +95,3 @@ TEST(Dictionary, SimpleScenario)
   ASSERT_EQ(r1, r2);
 }
 
-*/

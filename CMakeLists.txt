@@ -47,10 +47,11 @@ target_link_libraries(naive_tests naive_dictionary GTest::GTest GTest::Main Thre
 add_executable(tests src/tests.cpp)
 target_link_libraries(tests dictionary GTest::GTest GTest::Main Threads::Threads)
 
-add_executable(naive_bench src/naive_bench.cpp)
-target_link_libraries(naive_bench naive_dictionary benchmark::benchmark)
-
+add_executable(naive_bench src/bench.cpp)
 add_executable(bench src/bench.cpp)
+set_target_properties(naive_bench PROPERTIES COMPILE_FLAGS "-DVERSION=naive_")
+set_target_properties(bench PROPERTIES COMPILE_FLAGS "-DVERSION=")
+target_link_libraries(naive_bench naive_dictionary benchmark::benchmark)
 target_link_libraries(bench dictionary benchmark::benchmark)
 
 add_executable(main src/main.cpp)
