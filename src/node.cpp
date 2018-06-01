@@ -1,8 +1,9 @@
 #include "node.hpp"
 #include <iostream>
+#include <algorithm>
 
-Node::Node (std::string str)
-	: s(str), eow(false)
+Node::Node (const std::string& str)
+	: eow(false), s(str)
 {
 	//std::cout << "New node : " << s << std::endl;
 }
@@ -29,19 +30,14 @@ void Node::lv(lv_ctx& lv_ctx) const
 			array[0][i] = i;
 	}
 	else {
-		std::string node_str = "-" + s;
 		auto& prec_line = array[l - 1];
 		for (auto c = 1; c < lv_ctx.width; c++) {
-			int cost = (node_str[l] != lv_ctx.query[c]);
-			int min = std::min(
-				std::min(prec_line[c] + 1,
-				line[c - 1] + 1),
-				prec_line[c - 1] + cost
-			);
+			char cost = (s[l] != lv_ctx.query[c]);
+			char min = std::min({prec_line[c] + 1, line[c - 1] + 1, prec_line[c - 1] + cost});
 			if (l > 1 && c > 1 &&
-					node_str[l] == lv_ctx.query[c-1] &&	node_str[l-1] == lv_ctx.query[c]) {
+					s[l] == lv_ctx.query[c-1] &&	s[l-1] == lv_ctx.query[c]) {
 				//std::cout << "SWAP possible" << std::endl;
-				min = std::min(min, array[l - 2][c - 2] + cost);
+				min = std::min(min, (char)(array[l - 2][c - 2] + cost));
 			}
 			line[c] = min;
 		}
@@ -58,18 +54,18 @@ void Node::lv(lv_ctx& lv_ctx) const
 		}
 	}
 	
-	/*auto node_size = s.size();
+	auto node_size = s.size();
 	auto query_size = lv_ctx.query.size()-1;
 	
 	if (node_size > query_size && node_size - query_size > lv_ctx.distance)
 	{
 	}
-	else {*/
+	else {
 		for (auto& c : child) {
 			if (c.get())
 				c->lv(lv_ctx);
 		}
-	//}
+	}
 
 	array.pop_back();
 }

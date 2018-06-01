@@ -37,7 +37,7 @@ template <class Iterator>
 dictionary::dictionary(Iterator begin, Iterator end)
 	: counter(0), reader(0)
 {
-	trie = std::make_shared<Node>("");
+	trie = std::make_shared<Node>("-");
 	for (auto it = begin; it != end; it++) {
 		trie->insert(it->data());
 	}

@@ -1,8 +1,6 @@
 #include "naive_dictionary.hpp"
 #include "tools.hpp"
 
-
-
 naive_dictionary::naive_dictionary(const std::initializer_list<std::string>& init)
   : m_set(init.begin(), init.end())
 {

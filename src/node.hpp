@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <iostream>
 
-using lv_array_t = std::vector<std::vector<int>>;
+using lv_array_t = std::vector<std::vector<char>>;
 
 struct lv_ctx {
 	std::string query;
@@ -38,7 +38,7 @@ struct lv_ctx {
 class Node
 {
 public:
-	Node (std::string str);
+	Node (const std::string& str);
 	~Node() {
 		//std::cout << "Destructor " << s << std::endl;
 	}
