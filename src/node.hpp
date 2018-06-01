@@ -51,8 +51,11 @@ public:
 	
 	void lv(lv_ctx& lv_ctx) const;
 
-	inline std::shared_ptr<Node> getChild(size_t i) {
+	inline const std::shared_ptr<Node>& getChild(size_t i) const {
 		return child[i];
+	}
+	inline const std::shared_ptr<Node>* getChildren() const {
+		return child;
 	}
 	bool isEOW() const {
 		return eow;

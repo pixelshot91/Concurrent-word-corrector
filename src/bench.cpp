@@ -16,7 +16,7 @@
 #define DIC EVALUATOR(VERSION, dictionary)
 #define ASYNC_DIC EVALUATOR(VERSION, async_dictionary)
 
-constexpr int NQUERIES = 50;
+constexpr int NQUERIES = 100;
 
 class BMScenario : public ::benchmark::Fixture
 {
@@ -67,14 +67,8 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 	std::srand(std::time(nullptr));
 
   std::vector<std::string> data = load_word_list();
-  std::size_t n = 1000;
-  // Cut in 3 parts: A B C
-  // Initialize with A B
-  // 2 threads Search A
-  // 2 threads Remove B
-  // 2 threads Insert C
 
-  DIC dic(data.begin(), data.begin() + n);
+  DIC dic(data.begin(), data.end());
 
 	int nb_threads = 4; // nb thread per tasks (search, insert, erase)
 

@@ -28,14 +28,14 @@ private:
 	bool exist(const std::string& w) const;
 
   std::shared_ptr<Node> trie;
-	mutable std::mutex m;
-	mutable std::atomic<int> reader;
-	mutable std::condition_variable cv;
+	mutable std::mutex m[26];
+	mutable std::atomic<int> reader[26];
+	mutable std::condition_variable cv[26];
 };
 
 template <class Iterator>
 dictionary::dictionary(Iterator begin, Iterator end)
-	: counter(0), reader(0)
+	: counter(0), reader()
 {
 	trie = std::make_shared<Node>("-");
 	for (auto it = begin; it != end; it++) {
