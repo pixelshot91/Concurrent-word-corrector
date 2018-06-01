@@ -77,9 +77,9 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
   DIC dic(data.begin(), data.begin() + n);
 
 	int nb_threads = 4; // nb thread per tasks (search, insert, erase)
-  std::vector<std::thread> threads;
 
 	for (auto _ : st) {
+		std::vector<std::thread> threads;
 		for (auto n = 0; n < nb_threads; n++)
 			threads.emplace_back([&dic,&data,n]() 
 			{
@@ -107,8 +107,8 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 					dic.erase(data[index]);
 				}
 			});
-
-		for (auto& t : threads)
+		
+		for (std::thread& t : threads)
 			t.join();
 	}
 	//std::cout << "Counter = " << dic.counter << std::endl;
