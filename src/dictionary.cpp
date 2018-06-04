@@ -74,7 +74,7 @@ result_t dictionary::search(const std::string& query) const
 					std::lock_guard l(m[i]);
 					reader[i]--;
 				}
-				cv[i].notify_all();
+				cv[i].notify_one();
 			}
 		}
 
@@ -91,6 +91,9 @@ void dictionary::insert(const std::string& w)
 	cv[first_char].wait(l, [this, first_char] { return this->reader[first_char] == 0; });
 	//counter++;
 	trie->insert(w.data());
+
+	l.unlock();
+	cv[first_char].notify_one();
 	//std::cout << "Inserted : " << w << std::endl;
 }
 
@@ -102,6 +105,8 @@ void dictionary::erase(const std::string& w)
 	cv[first_char].wait(l, [this, first_char] { return this->reader[first_char] == 0; });
 	//counter++;
   trie->erase(w.data());
+	l.unlock();
+	cv[first_char].notify_one();
 	//std::cout << "Erased : " << w << std::endl;
 }
 
