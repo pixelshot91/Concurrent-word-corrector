@@ -66,15 +66,15 @@ result_t dictionary::search(const std::string& query) const
 			if (c.get())
 			{
 				{
-					std::lock_guard l(m[first_char]);
-					reader[first_char]++;
+					std::lock_guard l(m[i]);
+					reader[i]++;
 				}
 				c->lv(lv_ctx);
 				{
-					std::lock_guard l(m[first_char]);
-					reader[first_char]--;
+					std::lock_guard l(m[i]);
+					reader[i]--;
 				}
-				cv[first_char].notify_all();
+				cv[i].notify_all();
 			}
 		}
 

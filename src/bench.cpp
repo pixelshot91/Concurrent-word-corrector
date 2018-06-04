@@ -16,7 +16,7 @@
 #define DIC EVALUATOR(VERSION, dictionary)
 #define ASYNC_DIC EVALUATOR(VERSION, async_dictionary)
 
-constexpr int NQUERIES = 100;
+constexpr int NQUERIES = 1000;
 
 class BMScenario : public ::benchmark::Fixture
 {
