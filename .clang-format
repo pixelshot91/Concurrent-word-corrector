@@ -1,0 +1,43 @@
+AccessModifierOffset: -8
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakTemplateDeclarations: true
+
+# Allman would be nice to use here, but it does not attach the brace to
+# a class :
+# 	class foo
+# 	{
+BreakBeforeBraces: Custom
+
+BraceWrapping:
+  AfterClass:			false
+  AfterControlStatement:	false
+  AfterEnum:			false
+  AfterFunction:		true
+  AfterNamespace:		false
+  AfterStruct:			false
+  AfterUnion:			false
+  BeforeCatch:			false
+  BeforeElse:			true
+  SplitEmptyFunction:		false
+
+# TODO, BeforeColon would be nice to use here, but this option does not
+# always break the constructor:
+# 	ctor(int param1, int param2) : init1(0), init2()
+BreakConstructorInitializers: BeforeComma
+
+ConstructorInitializerIndentWidth: 8
+
+IncludeBlocks: Preserve
+IndentCaseLabels: false
+
+IncludeCategories:
+  - Regex:	'<.*'
+    Priority:	-2
+  - Regex:	'".*'
+    Priority:	-1
+
+IndentWidth: 8
+PointerAlignment: Left
+SortIncludes: true
+UseTab: Always

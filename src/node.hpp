@@ -1,8 +1,8 @@
 #pragma once
-#include <memory>
-#include <vector>
 #include <iomanip>
 #include <iostream>
+#include <memory>
+#include <vector>
 
 using lv_array_t = std::vector<std::vector<char>>;
 
@@ -13,7 +13,8 @@ struct lv_ctx {
 	std::string best;
 	int distance;
 
-	void print(const std::string& s) const {
+	void print(const std::string& s) const
+	{
 		int w = 3;
 		std::cout << "  ";
 		for (const char& c : query)
@@ -35,29 +36,33 @@ struct lv_ctx {
 	}
 };
 
-class Node
-{
+class Node {
 public:
-	Node (const std::string& str);
-	~Node() {
-		//std::cout << "Destructor " << s << std::endl;
+	Node(const std::string& str);
+	~Node()
+	{
+		// std::cout << "Destructor " << s << std::endl;
 	}
-	//result_t search(const std::string& w);
+	// result_t search(const std::string& w);
 	void insert(const char* w);
 
-	// Return true if node can be deleted because it's not EOW and has no children
+	// Return true if node can be deleted because it's not EOW and has no
+	// children
 	bool erase(const char* w);
 	bool has_children() const;
-	
+
 	void lv(lv_ctx& lv_ctx) const;
 
-	inline const std::shared_ptr<Node>& getChild(size_t i) const {
+	inline const std::shared_ptr<Node>& getChild(size_t i) const
+	{
 		return child[i];
 	}
-	inline const std::shared_ptr<Node>* getChildren() const {
+	inline const std::shared_ptr<Node>* getChildren() const
+	{
 		return child;
 	}
-	bool isEOW() const {
+	bool isEOW() const
+	{
 		return eow;
 	}
 
