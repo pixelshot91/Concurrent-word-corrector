@@ -10,8 +10,8 @@
 
 class dictionary : public IDictionary {
 public:
-	dictionary() = default;
-	dictionary(const std::initializer_list<std::string>& init);
+  dictionary();
+  dictionary(const std::initializer_list<std::string>& init);
 
 	template <class Iterator>
 	dictionary(Iterator begin, Iterator end);
@@ -22,21 +22,19 @@ public:
 	void insert(const std::string& w) final;
 	void erase(const std::string& w) final;
 
-	mutable size_t counter;
-
 private:
 	bool exist(const std::string& w) const;
 
-	std::shared_ptr<Node> trie;
+  std::shared_ptr<Node> trie;
+	mutable std::mutex m_root;
 	mutable std::mutex m[26];
-	mutable std::atomic<int> reader[26];
+	mutable unsigned char reader[26];
 	mutable std::condition_variable cv[26];
 };
 
 template <class Iterator>
 dictionary::dictionary(Iterator begin, Iterator end)
-	: counter(0)
-	, reader()
+	: reader{0}
 {
 
 	trie = std::make_shared<Node>("-");

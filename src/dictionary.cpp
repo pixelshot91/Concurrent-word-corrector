@@ -1,9 +1,13 @@
 #include "dictionary.hpp"
 #include "tools.hpp"
 
+dictionary::dictionary()
+	: reader{0}
+{
+	trie = std::make_shared<Node>("-");
+}
 dictionary::dictionary(const std::initializer_list<std::string>& init)
-	: counter(0)
-	, reader()
+	: reader{0}
 {
 
 	trie = std::make_shared<Node>("-");
@@ -22,33 +26,29 @@ void dictionary::init(const std::vector<std::string>& word_list)
 
 result_t dictionary::search(const std::string& query) const
 {
-	int first_char = query[0] - 'a';
 	{
-		std::lock_guard l(m[first_char]);
-		if (exist(query))
-			return {query, 0};
-	}
-	// counter++;
-
-	// Direct search
-	/*if (exist(query)) {
-		{
-			std::lock_guard l(m[first_char]);
-			reader[first_char]--;
+		std::lock_guard l_root(m_root);
+		if (query.size() == 0) {
+			if (trie->isEOW())
+			return {"", 0};
 		}
-		cv[first_char].notify_all();
-		return {query, 0};
-	}*/
+		else {
+			int first_char = query[0] - 'a';
+			std::lock_guard l(m[first_char]);
+			if (exist(query))
+				return {query, 0};
+		}
+	}
 
 	// Levenhstein
 	lv_array_t lv_array;
 
 	std::string best;
-	int distance = std::numeric_limits<int>::max();
-
+	int uninitialized_distance = std::numeric_limits<int>::max();
+  int distance = uninitialized_distance;
+	
 	int width = query.size() + 1;
 	lv_ctx lv_ctx = {"-" + query, lv_array, width, best, distance};
-	// trie->lv(lv_ctx);
 
 	{
 		lv_array_t& array = lv_ctx.array;
@@ -73,41 +73,51 @@ result_t dictionary::search(const std::string& query) const
 					std::lock_guard l(m[i]);
 					reader[i]--;
 				}
-				cv[i].notify_one();
+				cv[i].notify_all();
 			}
 		}
 	}
-
-	return {lv_ctx.best, lv_ctx.distance};
+	if (lv_ctx.distance == uninitialized_distance)
+		return {"", uninitialized_distance};
+  return {lv_ctx.best.substr(1), lv_ctx.distance};
 }
 
 void dictionary::insert(const std::string& w)
 {
-	int first_char = w[0] - 'a';
-	// std::cout << "Wait for insert " << w << std::endl;
-	std::unique_lock l(m[first_char]);
-	cv[first_char].wait(
-	    l, [this, first_char] { return this->reader[first_char] == 0; });
-	// counter++;
-	trie->insert(w.data());
+	if (w.size() == 0) {
+		std::lock_guard l_root(m_root);
+		trie->insert(w.data());
+		return;
+	}
+	
+	auto first_char = w[0] - 'a';
+  std::unique_lock l(m[first_char]);
+	cv[first_char].wait(l, [this, first_char] { return this->reader[first_char] == 0; });
+
+	auto& child_ptr = trie->getChild(first_char);
+	if (child_ptr.get() == nullptr)
+		child_ptr = std::make_shared<Node>(std::string("-") + w[0]);
+	child_ptr->insert(w.data()+1);
 
 	l.unlock();
-	cv[first_char].notify_one();
-	// std::cout << "Inserted : " << w << std::endl;
+	cv[first_char].notify_all();
 }
 
 void dictionary::erase(const std::string& w)
 {
+	if (w.size() == 0) {
+		std::lock_guard l_root(m_root);
+		trie->erase(w.data());
+		return;
+	}
 	int first_char = w[0] - 'a';
-	// std::cout << "Wait for erase " << w << std::endl;
-	std::unique_lock l(m[first_char]);
-	cv[first_char].wait(
-	    l, [this, first_char] { return this->reader[first_char] == 0; });
-	// counter++;
+  std::unique_lock l(m[first_char]);
+	cv[first_char].wait(l, [this, first_char] { return this->reader[first_char] == 0; });
+	
 	trie->erase(w.data());
+	
 	l.unlock();
-	cv[first_char].notify_one();
-	// std::cout << "Erased : " << w << std::endl;
+	cv[first_char].notify_all();
 }
 
 bool dictionary::exist(const std::string& w) const

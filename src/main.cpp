@@ -52,8 +52,5 @@ int main()
 			ok = false;
 		}
 	}
-
-	std::cout << "counter syn = " << dic.counter << std::endl;
-
 	return !ok;
 }
