@@ -12,6 +12,8 @@ int levenshtein(const std::string& a, const std::string& b);
 std::vector<std::string> load_word_list(const char* filename = nullptr,
 					bool shuffle = true);
 
+std::ostream& operator<<(std::ostream& os, const result_t& r);
+
 class Scenario {
 public:
 	~Scenario();
