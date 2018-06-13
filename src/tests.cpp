@@ -4,6 +4,7 @@
 #include "async_dictionary.hpp"
 #include "dictionary.hpp"
 #include "tools.hpp"
+#include "naive_dictionary.hpp"
 
 using namespace std::string_literals;
 
@@ -95,17 +96,48 @@ TEST(Dictionary, SimpleScenario)
 // same output as the blocking one
 TEST(Dictionary, LongScenario)
 {
-	std::vector<std::string> word_list = load_word_list();
-	// word_list.resize(100000);
-	word_list.resize(1000);
+  std::vector<std::string> word_list = load_word_list();
+  word_list.resize(10);
 
-	Scenario scn(word_list, 512);
+  Scenario scn(word_list, 1E5);
 
-	dictionary dic;
-	async_dictionary async_dic;
-	scn.prepare(dic);
-	scn.prepare(async_dic);
-	auto r1 = scn.execute(async_dic);
-	auto r2 = scn.execute(dic);
-	ASSERT_EQ(r1, r2);
+  naive_dictionary ref_dic;
+  dictionary sync;
+  async_dictionary async;
+  
+  scn.prepare(ref_dic);
+	scn.prepare(sync);
+	scn.prepare(async);
+
+  auto r_ref = scn.execute(ref_dic);
+  auto r_sync = scn.execute(sync);
+  auto r_async = scn.execute(async);
+	
+	ASSERT_EQ(r_ref.size(), r_sync.size());
+	ASSERT_EQ(r_ref.size(), r_async.size());
+  
+	for (size_t i = 0; i < r_ref.size(); i++) {
+		//std::cout << "i= " << i << ": " << r1[i] << ", " << r2[i] << std::endl;
+		ASSERT_EQ(std::get<int>(r_ref[i]), std::get<int>(r_sync[i]));
+		ASSERT_EQ(std::get<int>(r_ref[i]), std::get<int>(r_async[i]));
+	}
+}
+
+TEST(Dictionary, Async_Sequential_Consistency)
+{
+	int uninit_dist = std::numeric_limits<int>::max();
+	async_dictionary dic;
+	std::string w = "bonjour";
+	for (int i = 0; i < 5; i++)
+	{
+		auto s1 = dic.search(w);
+		dic.insert(w);
+		auto s2 = dic.search(w);
+		dic.erase(w);
+		auto s3 = dic.search(w);
+
+		ASSERT_EQ(s1.get(), result_t({"", uninit_dist}));
+		ASSERT_EQ(s2.get(), result_t({w, 0}));
+		ASSERT_EQ(s3.get(), result_t({"", uninit_dist}));
+	}
 }

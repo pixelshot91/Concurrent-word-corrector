@@ -8,8 +8,8 @@ find_package(benchmark REQUIRED)
 find_package(GTest)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-W -Wall -pthread")
-set(CMAKE_CXX_FLAGS_DEBUG "-fsanitize=thread -O3 -g")
+set(CMAKE_CXX_FLAGS "-W -Wall -Wextra -pedantic -pthread")
+set(CMAKE_CXX_FLAGS_DEBUG "-fsanitize=thread -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 include_directories(lib/include)
@@ -41,11 +41,8 @@ add_library(dictionary
   )
 
 set_source_files_properties(src/tools.cpp PROPERTIES COMPILE_DEFINITIONS WORD_LIST_FILE="${CMAKE_SOURCE_DIR}/words_alpha.txt")
-add_executable(naive_tests src/naive_tests.cpp)
-target_link_libraries(naive_tests naive_dictionary GTest::GTest GTest::Main Threads::Threads)
-
 add_executable(tests src/tests.cpp)
-target_link_libraries(tests dictionary GTest::GTest GTest::Main Threads::Threads)
+target_link_libraries(tests dictionary naive_dictionary GTest::GTest GTest::Main Threads::Threads)
 
 add_executable(naive_bench src/bench.cpp)
 add_executable(bench src/bench.cpp)
