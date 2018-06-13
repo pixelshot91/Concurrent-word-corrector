@@ -7,7 +7,6 @@ Node::Node(const std::string& str)
 	: eow(false)
 	, s(str)
 {
-	// std::cout << "New node : " << s << std::endl;
 }
 
 /*result_t Node::search(const std:string& w)
@@ -60,10 +59,10 @@ void Node::lv(lv_ctx& lv_ctx) const
 			lv_ctx.distance = dist;
 		}
 	}
-
-	auto node_size = s.size();
-	auto query_size = lv_ctx.query.size() - 1;
-
+	
+	int node_size = s.size();
+	int query_size = lv_ctx.query.size()-1;
+	
 	if (node_size > query_size &&
 	    node_size - query_size > lv_ctx.distance) {
 	}
@@ -79,10 +78,8 @@ void Node::lv(lv_ctx& lv_ctx) const
 
 void Node::insert(const char* w)
 {
-	if (w[0] == 0) {
+	if (w[0] == 0)
 		eow = true;
-		// std::cout << s << " is now a word" << std::endl;
-	}
 	else {
 		auto index = w[0] - 'a';
 		if (child[index].get() == nullptr)

@@ -53,8 +53,7 @@ public:
 
 	void lv(lv_ctx& lv_ctx) const;
 
-	inline const std::shared_ptr<Node>& getChild(size_t i) const
-	{
+	inline std::shared_ptr<Node>& getChild(size_t i) {
 		return child[i];
 	}
 	inline const std::shared_ptr<Node>* getChildren() const
