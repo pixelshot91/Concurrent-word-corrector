@@ -41,25 +41,21 @@ result_t dictionary::search(const std::string& query) const
 	}
 
 	// Levenhstein
+	int width = query.size() + 1;
 	lv_array_t lv_array;
+	lv_array.reserve(width * width * 2);
 
 	std::string best;
 	int uninitialized_distance = std::numeric_limits<int>::max();
   int distance = uninitialized_distance;
 	
-	int width = query.size() + 1;
 	lv_ctx lv_ctx = {"-" + query, lv_array, width, best, distance};
 
 	{
 		lv_array_t& array = lv_ctx.array;
-		array.push_back({});
-		auto& line = array.back();
-		line.resize(lv_ctx.width);
-		int l = array.size() - 1;
-		line[0] = l;
 
-		for (auto i = 1; i < lv_ctx.width; i++)
-			array[0][i] = i;
+		for (auto i = 0; i < lv_ctx.width; i++)
+			array.push_back(i);
 
 		for (int i = 0; i < 26; i++) {
 			const std::shared_ptr<Node>& c = trie->getChildren()[i];
@@ -68,7 +64,7 @@ result_t dictionary::search(const std::string& query) const
 					std::lock_guard l(m[i]);
 					reader[i]++;
 				}
-				c->lv(lv_ctx);
+				c->lv(lv_ctx, 1);
 				{
 					std::lock_guard l(m[i]);
 					reader[i]--;

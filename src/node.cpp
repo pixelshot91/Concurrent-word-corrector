@@ -9,49 +9,32 @@ Node::Node(const std::string& str)
 {
 }
 
-/*result_t Node::search(const std:string& w)
-{
-	if (w.empty())
-		return {s, 0};
-	auto index = w[0] - 'a';
-	child[index]
-}
-*/
-void Node::lv(lv_ctx& lv_ctx) const
+void Node::lv(lv_ctx& lv_ctx, const int l) const
 {
 	lv_array_t& array = lv_ctx.array;
-	array.push_back({});
-	auto& line = array.back();
-	line.resize(lv_ctx.width);
-	int l = array.size() - 1;
-	line[0] = l;
+	array.push_back(l);
 
-	if (l == 0) {
-		for (auto i = 1; i < lv_ctx.width; i++)
-			array[0][i] = i;
-	}
-	else {
-		auto& prec_line = array[l - 1];
-		for (auto c = 1; c < lv_ctx.width; c++) {
-			char cost = (s[l] != lv_ctx.query[c]);
-			char min = std::min({prec_line[c] + 1, line[c - 1] + 1,
-					     prec_line[c - 1] + cost});
+	int width = lv_ctx.width;
+	
+	for (auto c = 1; c < lv_ctx.width; c++) {
+		char cost = (s[l] != lv_ctx.query[c]);
+		char min = std::min({array[width * (l - 1) + c] + 1, array[width * l + (c - 1)] + 1,
+				array[width * (l - 1) + (c - 1)] + cost});
 
-			if (l > 1 && c > 1 && s[l] == lv_ctx.query[c - 1] &&
-			    s[l - 1] == lv_ctx.query[c]) {
-				// std::cout << "SWAP possible" << std::endl;
-				min = std::min(
-				    min, (char)(array[l - 2][c - 2] + cost));
-			}
-
-			line[c] = min;
+		if (l > 1 && c > 1 && s[l] == lv_ctx.query[c - 1] &&
+				s[l - 1] == lv_ctx.query[c]) {
+			// std::cout << "SWAP possible" << std::endl;
+			min = std::min(
+					min, (char)(array[width * (l - 2) + (c - 2)] + cost));
 		}
+
+		array.push_back(min);
 	}
 
-	// lv_ctx.print(s);
+	//lv_ctx.print(s);
 
 	if (eow) {
-		int dist = line.back();
+		int dist = array.back();
 		if (dist < lv_ctx.distance) {
 			// std::cout << "Found NEW best ! " << s << " ("
 			// << dist << ")" << std::endl;
@@ -61,19 +44,21 @@ void Node::lv(lv_ctx& lv_ctx) const
 	}
 	
 	int node_size = s.size();
-	int query_size = lv_ctx.query.size()-1;
+	int query_size = lv_ctx.query.size();
 	
-	if (node_size > query_size &&
-	    node_size - query_size > lv_ctx.distance) {
+	if (__builtin_expect(node_size > query_size &&
+			node_size + 1 - query_size >= lv_ctx.distance, 0)) {
 	}
 	else {
 		for (auto& c : child) {
 			if (c.get())
-				c->lv(lv_ctx);
+				c->lv(lv_ctx, l + 1);
 		}
 	}
 
-	array.pop_back();
+	for (int i = 0; i < width; i++)
+		array.pop_back();
+	//array.resize(array.size() - query_size);
 }
 
 void Node::insert(const char* w)

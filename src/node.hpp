@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-using lv_array_t = std::vector<std::vector<char>>;
+using lv_array_t = std::vector<char>;
 
 struct lv_ctx {
 	std::string query;
@@ -21,14 +21,11 @@ struct lv_ctx {
 			std::cout << std::setw(w) << c;
 		std::cout << std::endl;
 
-		for (size_t l = 0; l < array.size(); l++) {
-			if (l == 0)
-				std::cout << "- ";
-			else
-				std::cout << s[l - 1] << " ";
-			auto& line = array[l];
-			for (size_t c = 0; c < line.size(); c++) {
-				std::cout << std::setw(w) << line[c];
+		for (size_t l = 0; l < array.size() / width; l++) {
+			std::cout << s[l] << " ";
+			//auto& line = array[l];
+			for (int c = 0; c < width; c++) {
+				std::cout << std::setw(w) << std::to_string(array[l * width + c]);
 			}
 			std::cout << std::endl;
 		}
@@ -41,7 +38,7 @@ public:
 	Node(const std::string& str);
 	~Node()
 	{
-		// std::cout << "Destructor " << s << std::endl;
+		//std::cout << "Destructor " << s << std::endl;
 	}
 	// result_t search(const std::string& w);
 	void insert(const char* w);
@@ -51,7 +48,7 @@ public:
 	bool erase(const char* w);
 	bool has_children() const;
 
-	void lv(lv_ctx& lv_ctx) const;
+	void lv(lv_ctx& lv_ctx, int line_no) const;
 
 	inline std::shared_ptr<Node>& getChild(size_t i) {
 		return child[i];

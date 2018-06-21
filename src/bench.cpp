@@ -41,8 +41,6 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync)(benchmark::State& st)
 	for (auto _ : st)
 		m_scenario->execute(dic);
 
-	// std::cout << "Counter = " << dic.counter << std::endl;
-
 	st.SetItemsProcessed(st.iterations() * NQUERIES);
 }
 
