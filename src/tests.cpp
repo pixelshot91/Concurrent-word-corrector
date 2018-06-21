@@ -147,3 +147,15 @@ TEST(Dictionary, Async_Sequential_Consistency)
 		ASSERT_EQ(s3.get(), result_t({"", uninit_dist}));
 	}
 }
+
+TEST(Dictionary, Empty_Word)
+{
+	int uninit_dist = std::numeric_limits<int>::max();
+	dictionary dic;
+
+	ASSERT_EQ(dic.search(""), std::make_pair(""s, uninit_dist));
+	dic.insert("");
+	ASSERT_EQ(dic.search(""), std::make_pair(""s, 0));
+	dic.erase("");
+	ASSERT_EQ(dic.search(""), std::make_pair(""s, uninit_dist));
+}
