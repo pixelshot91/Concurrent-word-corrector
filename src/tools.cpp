@@ -8,7 +8,8 @@
 
 std::ostream& operator<<(std::ostream& os, const result_t& r)
 {
-	std::string s = "(" + std::get<std::string>(r) + ", " + std::to_string(std::get<int>(r)) + ")";
+	std::string s = "(" + std::get<std::string>(r) + ", " +
+			std::to_string(std::get<int>(r)) + ")";
 	os << s;
 	return os;
 }
@@ -50,25 +51,26 @@ int levenshtein(const std::string& a, const std::string& b)
 
 std::vector<std::string> load_word_list(const char* filename, bool shuffle)
 {
-  std::ifstream f;
-  if (!filename) filename = WORD_LIST_FILE;
-  f.open(filename);
-	
+	std::ifstream f;
+	if (!filename)
+		filename = WORD_LIST_FILE;
+	f.open(filename);
+
 	if (!f.is_open())
-		throw std::invalid_argument(std::string(filename) + ": No such file or directory");
-  std::string s;
-  std::vector<std::string> data;
-  for (std::string s; std::getline(f, s);)
-    data.push_back(s);
+		throw std::invalid_argument(std::string(filename) +
+					    ": No such file or directory");
+	std::string s;
+	std::vector<std::string> data;
+	for (std::string s; std::getline(f, s);)
+		data.push_back(s);
 
-  if (shuffle)
-  {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(data.begin(), data.end(), g);
-  }
+	if (shuffle) {
+		std::random_device rd;
+		std::mt19937 g(rd());
+		std::shuffle(data.begin(), data.end(), g);
+	}
 
-  return data;
+	return data;
 }
 
 struct query {

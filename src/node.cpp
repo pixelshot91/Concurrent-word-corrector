@@ -6,8 +6,7 @@
 Node::Node(const std::string& str)
 	: eow(false)
 	, s(str)
-{
-}
+{}
 
 void Node::lv(lv_ctx& lv_ctx, const int l) const
 {
@@ -15,23 +14,25 @@ void Node::lv(lv_ctx& lv_ctx, const int l) const
 	array.push_back(l);
 
 	int width = lv_ctx.width;
-	
+
 	for (auto c = 1; c < lv_ctx.width; c++) {
 		char cost = (s[l] != lv_ctx.query[c]);
-		char min = std::min({array[width * (l - 1) + c] + 1, array[width * l + (c - 1)] + 1,
-				array[width * (l - 1) + (c - 1)] + cost});
+		char min = std::min({array[width * (l - 1) + c] + 1,
+				     array[width * l + (c - 1)] + 1,
+				     array[width * (l - 1) + (c - 1)] + cost});
 
 		if (l > 1 && c > 1 && s[l] == lv_ctx.query[c - 1] &&
-				s[l - 1] == lv_ctx.query[c]) {
+		    s[l - 1] == lv_ctx.query[c]) {
 			// std::cout << "SWAP possible" << std::endl;
 			min = std::min(
-					min, (char)(array[width * (l - 2) + (c - 2)] + cost));
+			    min,
+			    (char)(array[width * (l - 2) + (c - 2)] + cost));
 		}
 
 		array.push_back(min);
 	}
 
-	//lv_ctx.print(s);
+	// lv_ctx.print(s);
 
 	if (eow) {
 		int dist = array.back();
@@ -42,18 +43,19 @@ void Node::lv(lv_ctx& lv_ctx, const int l) const
 			lv_ctx.distance = dist;
 		}
 	}
-	
+
 	int node_size = s.size();
 	int query_size = lv_ctx.query.size();
 	int pt_to_loose = array.back() - lv_ctx.distance + 1;
 	int uninitialized_distance = std::numeric_limits<int>::max();
-	
+
 	if (node_size > query_size &&
-			node_size + 1 - query_size >= lv_ctx.distance)
-	{}
-	else if (lv_ctx.distance != uninitialized_distance && node_size + pt_to_loose > query_size + lv_ctx.distance) {
-			/*std::cout << "pt_to_loose = " << pt_to_loose << std::endl;
-			std::cout << "Pruning" << std::endl;*/
+	    node_size + 1 - query_size >= lv_ctx.distance) {
+	}
+	else if (lv_ctx.distance != uninitialized_distance &&
+		 node_size + pt_to_loose > query_size + lv_ctx.distance) {
+		/*std::cout << "pt_to_loose = " << pt_to_loose << std::endl;
+		std::cout << "Pruning" << std::endl;*/
 	}
 	else {
 		for (auto& c : child) {
@@ -64,7 +66,7 @@ void Node::lv(lv_ctx& lv_ctx, const int l) const
 
 	for (int i = 0; i < width; i++)
 		array.pop_back();
-	//array.resize(array.size() - query_size);
+	// array.resize(array.size() - query_size);
 }
 
 void Node::insert(const char* w)

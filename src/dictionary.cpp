@@ -30,7 +30,7 @@ result_t dictionary::search(const std::string& query) const
 		std::lock_guard l_root(m_root);
 		if (query.size() == 0) {
 			if (trie->isEOW())
-			return {"", 0};
+				return {"", 0};
 		}
 		else {
 			int first_char = query[0] - 'a';
@@ -47,8 +47,9 @@ result_t dictionary::search(const std::string& query) const
 
 	std::string best;
 	int uninitialized_distance = std::numeric_limits<int>::max();
-  int distance = uninitialized_distance;
-	
+
+	int distance = uninitialized_distance;
+
 	lv_ctx lv_ctx = {"-" + query, lv_array, width, best, distance};
 
 	{
@@ -75,7 +76,7 @@ result_t dictionary::search(const std::string& query) const
 	}
 	if (lv_ctx.distance == uninitialized_distance)
 		return {"", uninitialized_distance};
-  return {lv_ctx.best.substr(1), lv_ctx.distance};
+	return {lv_ctx.best.substr(1), lv_ctx.distance};
 }
 
 void dictionary::insert(const std::string& w)
@@ -85,15 +86,16 @@ void dictionary::insert(const std::string& w)
 		trie->insert(w.data());
 		return;
 	}
-	
+
 	auto first_char = w[0] - 'a';
-  std::unique_lock l(m[first_char]);
-	cv[first_char].wait(l, [this, first_char] { return this->reader[first_char] == 0; });
+	std::unique_lock l(m[first_char]);
+	cv[first_char].wait(
+	    l, [this, first_char] { return this->reader[first_char] == 0; });
 
 	auto& child_ptr = trie->getChild(first_char);
 	if (child_ptr.get() == nullptr)
 		child_ptr = std::make_shared<Node>(std::string("-") + w[0]);
-	child_ptr->insert(w.data()+1);
+	child_ptr->insert(w.data() + 1);
 
 	l.unlock();
 	cv[first_char].notify_all();
@@ -107,11 +109,12 @@ void dictionary::erase(const std::string& w)
 		return;
 	}
 	int first_char = w[0] - 'a';
-  std::unique_lock l(m[first_char]);
-	cv[first_char].wait(l, [this, first_char] { return this->reader[first_char] == 0; });
-	
+	std::unique_lock l(m[first_char]);
+	cv[first_char].wait(
+	    l, [this, first_char] { return this->reader[first_char] == 0; });
+
 	trie->erase(w.data());
-	
+
 	l.unlock();
 	cv[first_char].notify_all();
 }

@@ -23,9 +23,11 @@ struct lv_ctx {
 
 		for (size_t l = 0; l < array.size() / width; l++) {
 			std::cout << s[l] << " ";
-			//auto& line = array[l];
+			// auto& line = array[l];
 			for (int c = 0; c < width; c++) {
-				std::cout << std::setw(w) << std::to_string(array[l * width + c]);
+				std::cout
+				    << std::setw(w)
+				    << std::to_string(array[l * width + c]);
 			}
 			std::cout << std::endl;
 		}
@@ -38,7 +40,7 @@ public:
 	Node(const std::string& str);
 	~Node()
 	{
-		//std::cout << "Destructor " << s << std::endl;
+		// std::cout << "Destructor " << s << std::endl;
 	}
 	// result_t search(const std::string& w);
 	void insert(const char* w);
@@ -50,7 +52,8 @@ public:
 
 	void lv(lv_ctx& lv_ctx, int line_no) const;
 
-	inline std::shared_ptr<Node>& getChild(size_t i) {
+	inline std::shared_ptr<Node>& getChild(size_t i)
+	{
 		return child[i];
 	}
 	inline const std::shared_ptr<Node>* getChildren() const

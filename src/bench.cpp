@@ -49,8 +49,8 @@ BENCHMARK_DEFINE_F(BMScenario, Async)(benchmark::State& st)
 	ASYNC_DIC dic;
 	m_scenario->prepare(dic);
 
-  for (auto _ : st)
-    auto r = m_scenario->execute(dic);
+	for (auto _ : st)
+		auto r = m_scenario->execute(dic);
 
 	st.SetItemsProcessed(st.iterations() * NQUERIES);
 }
@@ -63,10 +63,10 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 
 	std::vector<std::string> data = load_word_list();
 
-  DIC dic(data.begin(), data.begin() + data.size()/10);
+	DIC dic(data.begin(), data.begin() + data.size() / 10);
 
 	int nb_threads = 4; // nb thread per tasks (search, insert, erase)
-	
+
 	for (auto _ : st) {
 		std::vector<std::thread> threads;
 		for (auto n = 0; n < nb_threads; n++)
@@ -114,8 +114,14 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 	st.SetItemsProcessed(st.iterations() * NQUERIES * nb_threads);
 }
 
-BENCHMARK_REGISTER_F(BMScenario, NoAsync)->Unit(benchmark::kMillisecond)->UseRealTime();
-BENCHMARK_REGISTER_F(BMScenario, Async)->Unit(benchmark::kMillisecond)->UseRealTime();
-BENCHMARK_REGISTER_F(BMScenario, NoAsync_MT)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_REGISTER_F(BMScenario, NoAsync)
+    ->Unit(benchmark::kMillisecond)
+    ->UseRealTime();
+BENCHMARK_REGISTER_F(BMScenario, Async)
+    ->Unit(benchmark::kMillisecond)
+    ->UseRealTime();
+BENCHMARK_REGISTER_F(BMScenario, NoAsync_MT)
+    ->Unit(benchmark::kMillisecond)
+    ->UseRealTime();
 
 BENCHMARK_MAIN();

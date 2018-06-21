@@ -10,22 +10,23 @@
 
 class dictionary : public IDictionary {
 public:
-  dictionary();
-  dictionary(const std::initializer_list<std::string>& init);
+	dictionary();
+	dictionary(const std::initializer_list<std::string>& init);
 
 	template <class Iterator>
 	dictionary(Iterator begin, Iterator end);
 
 	void init(const std::vector<std::string>& word_list) final;
 
-	result_t search(const std::string& w) const final;
-	void insert(const std::string& w) final;
-	void erase(const std::string& w) final;
-
+	// clang-format off
+	result_t	search(const std::string& w) const final;
+	void		insert(const std::string& w) final;
+	void		erase(const std::string& w) final;
+	// clang-format on
 private:
 	bool exist(const std::string& w) const;
 
-  std::shared_ptr<Node> trie;
+	std::shared_ptr<Node> trie;
 	mutable std::mutex m_root;
 	mutable std::mutex m[26];
 	mutable unsigned char reader[26];
