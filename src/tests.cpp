@@ -99,7 +99,7 @@ TEST(Dictionary, LongScenario)
   std::vector<std::string> word_list = load_word_list();
   word_list.resize(10);
 
-  Scenario scn(word_list, 1E3);
+  Scenario scn(word_list, 1E5);
 
   naive_dictionary ref_dic;
   dictionary sync;

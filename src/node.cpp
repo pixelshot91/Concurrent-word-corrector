@@ -45,9 +45,15 @@ void Node::lv(lv_ctx& lv_ctx, const int l) const
 	
 	int node_size = s.size();
 	int query_size = lv_ctx.query.size();
+	int pt_to_loose = array.back() - lv_ctx.distance + 1;
+	int uninitialized_distance = std::numeric_limits<int>::max();
 	
-	if (__builtin_expect(node_size > query_size &&
-			node_size + 1 - query_size >= lv_ctx.distance, 0)) {
+	if (node_size > query_size &&
+			node_size + 1 - query_size >= lv_ctx.distance)
+	{}
+	else if (lv_ctx.distance != uninitialized_distance && node_size + pt_to_loose > query_size + lv_ctx.distance) {
+			/*std::cout << "pt_to_loose = " << pt_to_loose << std::endl;
+			std::cout << "Pruning" << std::endl;*/
 	}
 	else {
 		for (auto& c : child) {
