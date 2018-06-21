@@ -29,6 +29,24 @@ TEST(Dictionary, Basic)
 	ASSERT_EQ(dic.search("masseur"), std::make_pair("massue"s, 2));
 }
 
+TEST(Dictionary, Empty_Word)
+{
+	int uninit_dist = std::numeric_limits<int>::max();
+	dictionary dic;
+
+	ASSERT_EQ(dic.search(""), std::make_pair(""s, uninit_dist));
+	dic.insert("");
+	ASSERT_EQ(dic.search(""), std::make_pair(""s, 0));
+	dic.erase("");
+	ASSERT_EQ(dic.search(""), std::make_pair(""s, uninit_dist));
+}
+
+TEST(Dictionary, Swap)
+{
+	dictionary dic = {"bonjour"};
+	ASSERT_EQ(dic.search("bojnour"), std::make_pair("bonjour"s, 1));
+}
+
 // Test that executes some operations concurrently
 // Does not test anything in itself but can be used to detected bugs
 // with the thread sanitizer enabled
@@ -148,14 +166,3 @@ TEST(Dictionary, Async_Sequential_Consistency)
 	}
 }
 
-TEST(Dictionary, Empty_Word)
-{
-	int uninit_dist = std::numeric_limits<int>::max();
-	dictionary dic;
-
-	ASSERT_EQ(dic.search(""), std::make_pair(""s, uninit_dist));
-	dic.insert("");
-	ASSERT_EQ(dic.search(""), std::make_pair(""s, 0));
-	dic.erase("");
-	ASSERT_EQ(dic.search(""), std::make_pair(""s, uninit_dist));
-}
