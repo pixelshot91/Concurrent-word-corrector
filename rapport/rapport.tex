@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage[margin=2cm]{geometry}
+\title{Assignment 2: Concurrent word detector}
+\author{Julien GAUTIER, Florent Bordignon}
+\begin{document}
+\maketitle
+Dans ce rapport, le mot "distance" se référera à la distance d'alignement optimal de chaine de charactère (Optimal string aligment distance).
+
+\section{Dictionnaire synchrone}
+\subsection{Fonctionnement}
+Dictionary est implémenté avec un TRIE. On utilise l'algorithme de Levenshtein implémenté en utilisant la programmation dynamique. Le mot recherché est écrit sur la ligne du haut. Pour faire une recherche, on fait un parcourt profondeur du Trie. A chaque noeud, une ligne est ajoutée. Cette algoritme permet de consever le début du tableau.
+
+\subsection{Pruning}
+On cherche a arréter la recherche le plus tôt possible de deux manières:
+\begin{itemize}
+\item La distance minimum entre deux mots est la différence de taille entre ces deux mots. Si la taille du mot correspondant au noeud actuel du Trie est supérieur à la taille du mot recherché plus la distance minimal trouvé jusqu'à présent, alors on peut arréter la recherche de cette branche.
+\item La distance entre le mot actuel et le mot recherché (la case en bas à droite du tableau) ne peut diminuer que de 1 lorsque l'on ajoute une ligne. Si la distance du mot actuel (de taille $t_a$) est $d_a$, et que la meilleur distance jusqu'à présent est $d_m$, il faut ajouter au minimum $d_a - d_m$ caractères pour avoir un nouveau minimum. Ce nouveau minimum potentiel aura un taille de $t_a + (d_a - d_m)$. Si cette taille est supérieure à la taille du mot recherché plus $d_m$, alors il n'y a aucune chance pour que cette branche puisse trouver un nouveau minimum. On peut donc s'arréter.
+\end{itemize}
+\subsection{Fine-grained locking}
+26 branches partent de la racine du Trie. Une opération peut travailler soit sur la racine, soit sur le reste de l'arbre. Si l'opération travaille sur la racine, un lock global assure lui assure l'exclusivité du dictionnaire.
+Si l'opération ne travail pas sur la racine (le cas le plus fréquent), il travaille donc sur l'un des 26 fils de la racine. Chacun de ces fils peut être lock individuellement. Si l'opération est une recherche le compteur des readers pour cette branche est augmenté de 1. Si l'opération modifie l'arbre, alors il attend qu'il n'y ai plus aucun lecteur sur cette branche, puis il lock la branche.
+
+\section{AsyncDictionary}
+Pour assurer la sequentialité du dictionaire, nous avons utilisé un système de ticket. Il y a un compteur pour chaque type d'opération : search, insert et erase. Un opération d'un type ne peut pas s'exécuter si d'autre opérations d'un autre type sont en cours d'execution: on ne peut pas faire un search d'un mot avant d'avoir executé toutes les insertions au cas ou ce mot serait justement inséré.
+
+Le thread désirant éxécuter l'opération search incrémente le compteur de search en attente mais ne commence pas tout de suite. Il utilise un \texttt{std::condition\_variable} pour attendre que les autres opérations soit fini. Dès qu'il n'y a plus d'insertion ni de suppression, toutes les recherches sont executées en même temps.
+
+\end{document}
