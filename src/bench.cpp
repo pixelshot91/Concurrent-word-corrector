@@ -70,7 +70,7 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 	for (auto _ : st) {
 		std::vector<std::thread> threads;
 		for (auto n = 0; n < nb_threads; n++)
-			threads.emplace_back([&dic, &data, n]() {
+			threads.emplace_back([&dic, &data]() {
 				// std::for_each(data.begin() + 0 * n,
 				// data.begin() + 1 * n,
 				// std::bind(&IDictionary::search, &dic, _1));
@@ -82,7 +82,7 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 				}
 			});
 		for (auto n = 0; n < nb_threads; n++)
-			threads.emplace_back([&dic, &data, n]() {
+			threads.emplace_back([&dic, &data]() {
 				// std::for_each(data.begin() + 0 * n,
 				// data.begin() + 1 * n,
 				// std::bind(&IDictionary::search, &dic, _1));
@@ -94,7 +94,7 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 				}
 			});
 		for (auto n = 0; n < nb_threads; n++)
-			threads.emplace_back([&dic, &data, n]() {
+			threads.emplace_back([&dic, &data]() {
 				// std::for_each(data.begin() + 0 * n,
 				// data.begin() + 1 * n,
 				// std::bind(&IDictionary::search, &dic, _1));

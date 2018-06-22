@@ -66,34 +66,34 @@ TEST(Dictionary, ConcurrentOperations)
 
 	std::thread t[6];
 
-	t[0] = std::thread([&dic, &data, chk_sz]() {
+	t[0] = std::thread([&dic, &data]() {
 		std::for_each(data.begin() + 0 * chk_sz,
 			      data.begin() + 1 * chk_sz,
 			      std::bind(&IDictionary::search, &dic, _1));
 	});
-	t[1] = std::thread([&dic, &data, chk_sz]() {
+	t[1] = std::thread([&dic, &data]() {
 		std::for_each(data.begin() + 1 * chk_sz,
 			      data.begin() + 2 * chk_sz,
 			      std::bind(&IDictionary::search, &dic, _1));
 	});
 
-	t[2] = std::thread([&dic, &data, chk_sz]() {
+	t[2] = std::thread([&dic, &data]() {
 		std::for_each(data.begin() + 2 * chk_sz,
 			      data.begin() + 3 * chk_sz,
 			      std::bind(&IDictionary::erase, &dic, _1));
 	});
-	t[3] = std::thread([&dic, &data, chk_sz]() {
+	t[3] = std::thread([&dic, &data]() {
 		std::for_each(data.begin() + 3 * chk_sz,
 			      data.begin() + 4 * chk_sz,
 			      std::bind(&IDictionary::erase, &dic, _1));
 	});
 
-	t[4] = std::thread([&dic, &data, chk_sz]() {
+	t[4] = std::thread([&dic, &data]() {
 		std::for_each(data.begin() + 4 * chk_sz,
 			      data.begin() + 5 * chk_sz,
 			      std::bind(&IDictionary::insert, &dic, _1));
 	});
-	t[5] = std::thread([&dic, &data, chk_sz]() {
+	t[5] = std::thread([&dic, &data]() {
 		std::for_each(data.begin() + 5 * chk_sz,
 			      data.begin() + 6 * chk_sz,
 			      std::bind(&IDictionary::insert, &dic, _1));
