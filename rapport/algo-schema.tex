@@ -7,9 +7,7 @@
 }
 \newenvironment{tree}{
   \begin{minipage}{0.16\paperwidth}
-    \begin{tikzpicture}[
-EOW/.style={circle, draw}
-		]
+    \begin{tikzpicture}
 }{
     \end{tikzpicture}
   \end{minipage}
@@ -18,17 +16,19 @@ EOW/.style={circle, draw}
   \framebox[0.4\paperwidth]{#1}
 }
 \newenvironment{twosteps}{
-  % Adjusting the width (by 0cm here) is neede when the margins are too
-  % big...
+  % Adjusting the width is needed when the margins are too big...
+  % (which is not the case here)
   \begin{adjustwidth}{0cm}{0cm}
 }{
   \end{adjustwidth}
 }
 \newcommand\nop{}
 
+\tikzset{EOW/.style = {circle, draw}}
+
 \begin{twosteps}
   \step{
-		Etape 1
+		Étape 1
     \begin{tree}
       \node {-}
       child {node [fill=red!30,label=left:$\to$] {N}
@@ -52,7 +52,7 @@ EOW/.style={circle, draw}
     \end{tab}
   }% \step
   \step {
-		Etape 2
+		Étape 2
     \begin{tree}
       \node {-}
       child {node [fill=red!30] {N}
@@ -81,7 +81,7 @@ EOW/.style={circle, draw}
 
 \begin{twosteps}
   \step{
-		Etape 3
+		Étape 3
     \begin{tree}
       \node {-}
       child {node {N}
@@ -105,14 +105,14 @@ EOW/.style={circle, draw}
     \end{tab}
   }% \step
   \step {
-		Etape 4
+		Étape 4
     \begin{tree}
       \node {-}
       child {node {N}
         child {node[EOW] {O}}
       }
       child {node [fill=red!30] {S}
-        child {node [label=left:$\to$] {O}
+        child {node [label=right:$\leftarrow$] {O}
           child {node[EOW] {N}}
         }
         child {node[EOW] {U}}
@@ -134,7 +134,7 @@ EOW/.style={circle, draw}
 
 \begin{twosteps}
   \step {
-		Etape 5
+		Étape 5
     \begin{tree}
       \node {-}
       child {node {N}
@@ -189,14 +189,11 @@ EOW/.style={circle, draw}
   }% \step
 \end{twosteps}
 \begin{flushright}
-  \begin{tikzpicture}
-    \node [fill=red!30] {N};
-  \end{tikzpicture}
-  : \textit{lock} verrouillé\\
-  \begin{tikzpicture}
-    \node [label=left:$\to$] {N};
-  \end{tikzpicture}
-  : étape courante
+  \small
+  \tikz \node [fill=red!30] {N}; : \textit{lock} verrouillé\\
+  \tikz \node [label=left:$\to$] {N}; : étape courante\\
+  \tikz \node [EOW] {N}; : n\oe{}ud marquant la fin d'un mot
+    (\textit{EOW})
 \end{flushright}
 \begin{center}
   \textit{Recherche du mot ``on" dans le dictionnaire \{``no", ``son",
