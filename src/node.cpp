@@ -48,12 +48,17 @@ void Node::lv(lv_ctx& lv_ctx, const int l) const
 	int query_size = lv_ctx.query.size();
 	int pt_to_loose = array.back() - lv_ctx.distance + 1;
 	int uninitialized_distance = std::numeric_limits<int>::max();
-
-	if (node_size > query_size &&
+	
+	if (lv_ctx.distance == 1) {
+		//std::cout << "Pruning 1" << std::endl;
+	}
+	else if (node_size > query_size &&
 	    node_size + 1 - query_size >= lv_ctx.distance) {
+			//std::cout << "Pruning size" << std::endl;
 	}
 	else if (lv_ctx.distance != uninitialized_distance &&
 		 node_size + pt_to_loose > query_size + lv_ctx.distance) {
+		 //std::cout << "Prunning point" << std::endl;
 		/*std::cout << "pt_to_loose = " << pt_to_loose << std::endl;
 		std::cout << "Pruning" << std::endl;*/
 	}
