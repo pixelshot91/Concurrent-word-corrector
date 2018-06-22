@@ -1,4 +1,5 @@
 TEXCC := pdflatex
+SRC := rapport.tex algo-schema.tex
 PDF := rapport.pdf
 
 DIST_NAME := capa-1.0
@@ -16,6 +17,8 @@ help:
 	@echo - distcheck: verify that the build works
 	@echo - mostlyclean: remove all files except the PDF
 	@echo - clean
+
+$(PDF): $(SRC)
 
 %.pdf: %.tex
 # Some tex files need to get some metadata through a first,
@@ -43,8 +46,8 @@ distclean:
 .PHONY: mostlyclean
 mostlyclean: distclean
 	$(RM) -r auto
-	$(RM) $(PDF:.pdf=.aux) $(PDF:.pdf=.log) $(PDF:.pdf=.out) \
-		$(PDF:.pdf=.toc)
+	$(RM) $(SRC:.tex=.aux) $(SRC:.tex=.log) $(SRC:.tex=.out) \
+		$(SRC:.tex=.toc)
 
 .PHONY: clean
 clean: mostlyclean

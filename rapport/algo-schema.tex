@@ -1,0 +1,184 @@
+\newenvironment{tab}{
+  \begin{minipage}{0.1\paperwidth}
+    \begin{tabular}{|l|r|r|r|r|}
+}{
+    \end{tabular}
+  \end{minipage}
+}
+\newenvironment{tree}{
+  \begin{minipage}{0.16\paperwidth}
+    \begin{tikzpicture}
+}{
+    \end{tikzpicture}
+  \end{minipage}
+}
+\newcommand\step[1]{
+  \framebox[0.4\paperwidth]{#1}
+}
+\newenvironment{twosteps}{
+  % Adjusting the width (by 0cm here) is neede when the margins are too
+  % big...
+  \begin{adjustwidth}{0cm}{0cm}
+}{
+  \end{adjustwidth}
+}
+\newcommand\nop{}
+
+\begin{twosteps}
+  \step{
+    \begin{tree}
+      \node {-}
+      child {node [fill=red!30,label=left:$\to$] {N}
+        child {node {L}}
+      }
+      child {node {S}
+        child {node {L}
+          child {node {N}}
+        }
+        child {node {U}}
+      };
+    \end{tree}
+    \begin{tab}
+      \hline
+      \nop{}	& L	& N\\
+      \hline
+      N		& 1	& 1\\
+      \hline
+    \end{tab}
+  }% \step
+  \step {
+    \begin{tree}
+      \node {-}
+      child {node [fill=red!30] {N}
+        child {node [label=left:$\to$] {L}}
+      }
+      child {node {S}
+        child {node {L}
+          child {node {N}}
+        }
+        child {node {U}}
+      };
+    \end{tree}
+    \begin{tab}
+      \hline
+      \nop{}	& L	& N\\
+      \hline
+      N		& 1	& 1\\
+      \hline
+      L		& 1	& 1\\
+      \hline
+    \end{tab}
+  }% \step
+\end{twosteps}
+
+\begin{twosteps}
+  \step{
+    \begin{tree}
+      \node {-}
+      child {node {N}
+        child {node {L}}
+      }
+      child {node [fill=red!30,label=left:$\to$] {S}
+        child {node {L}
+          child {node {N}}
+        }
+        child {node {U}}
+      };
+    \end{tree}
+    \begin{tab}
+      \hline
+      \nop{}	& L	& N\\
+      \hline
+      S		& 1	& 2\\
+      \hline
+    \end{tab}
+  }% \step
+  \step {
+    \begin{tree}
+      \node {-}
+      child {node {N}
+        child {node {L}}
+      }
+      child {node [fill=red!30] {S}
+        child {node [label=left:$\to$] {L}
+          child {node {N}}
+        }
+        child {node {U}}
+      };
+    \end{tree}
+    \begin{tab}
+      \hline
+      \nop{}	& L	& N\\
+      \hline
+      S		& 1	& 2\\
+      \hline
+      L		& 1	& 2\\
+      \hline
+    \end{tab}
+  }% \step
+\end{twosteps}
+
+\begin{twosteps}
+  \step {
+    \begin{tree}
+      \node {-}
+      child {node {N}
+        child {node {L}}
+      }
+      child {node [fill=red!30] {S}
+        child {node {L}
+          child {node [label=left:$\to$] {N}}
+        }
+        child {node {U}}
+      };
+    \end{tree}
+    \begin{tab}
+      \hline
+      \nop{}	& L	& N\\
+      \hline
+      S		& 1	& 2\\
+      \hline
+      L		& 1	& 2\\
+      \hline
+      N		& 2	& 1\\
+      \hline
+    \end{tab}
+  }% \step
+  \step {
+    \begin{tree}
+      \node {-}
+      child {node {N}
+        child {node {L}}
+      }
+      child {node [fill=red!30] {S}
+        child {node {L}
+          child {node {N}}
+        }
+        child {node [label=left:$\to$] {U}}
+      };
+    \end{tree}
+    \begin{tab}
+      \hline
+      \nop{}	& L	& N\\
+      \hline
+      S		& 1	& 2\\
+      \hline
+      U		& 2	& 2\\
+      \hline
+    \end{tab}
+  }% \step
+\end{twosteps}
+\begin{flushright}
+  \begin{tikzpicture}
+    \node [fill=red!30] {N};
+  \end{tikzpicture}
+  : \textit{lock} verrouillé\\
+  \begin{tikzpicture}
+    \node [label=left:$\to$] {N};
+  \end{tikzpicture}
+  : étape courante
+\end{flushright}
+\begin{center}
+  \textit{Recherche du mot ``ln" dans le dictionnaire \{``nl", ``sln",
+    ``su"\}}.
+\end{center}

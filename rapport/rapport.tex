@@ -1,8 +1,8 @@
 \documentclass{article}
+\usepackage{chngpage}
 \usepackage[utf8]{inputenc}
-\usepackage{listings}
-\usepackage{graphicx}
 \usepackage[margin=2cm]{geometry}
+\usepackage{tikz}
 
 \title{Assignment 2: Concurrent word detector}
 \author{Julien GAUTIER, Florent BORDIGNON}
@@ -21,7 +21,9 @@ programmation dynamique.
 Le mot recherché est écrit sur la ligne du haut.
 Pour faire une recherche, on fait un parcourt profondeur du Trie.  A
 chaque noeud, une ligne est ajoutée.
-Cette algoritme permet de consever le début du tableau.
+Cette algoritme permet de consever le début du tableau.\\
+
+\input{algo-schema}
 
 \subsection{Pruning}
 On cherche a arréter la recherche le plus tôt possible de deux manières:
