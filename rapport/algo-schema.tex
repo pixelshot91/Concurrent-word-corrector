@@ -7,7 +7,9 @@
 }
 \newenvironment{tree}{
   \begin{minipage}{0.16\paperwidth}
-    \begin{tikzpicture}
+    \begin{tikzpicture}[
+EOW/.style={circle, draw}
+		]
 }{
     \end{tikzpicture}
   \end{minipage}
@@ -30,13 +32,13 @@
     \begin{tree}
       \node {-}
       child {node [fill=red!30,label=left:$\to$] {N}
-        child {node {O}}
+        child {node[EOW] {O}}
       }
       child {node {S}
         child {node {O}
-          child {node {N}}
+          child {node[EOW] {N}}
         }
-        child {node {U}}
+        child {node[EOW] {U}}
       };
     \end{tree}
     \begin{tab}
@@ -54,13 +56,13 @@
     \begin{tree}
       \node {-}
       child {node [fill=red!30] {N}
-        child {node [label=left:$\to$] {O}}
+        child {node[EOW] [label=left:$\to$] {O}}
       }
       child {node {S}
         child {node {O}
-          child {node {N}}
+          child {node[EOW] {N}}
         }
-        child {node {U}}
+        child {node[EOW] {U}}
       };
     \end{tree}
     \begin{tab}
@@ -83,13 +85,13 @@
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {O}}
+        child {node[EOW] {O}}
       }
       child {node [fill=red!30,label=left:$\to$] {S}
         child {node {O}
-          child {node {N}}
+          child {node[EOW] {N}}
         }
-        child {node {U}}
+        child {node[EOW] {U}}
       };
     \end{tree}
     \begin{tab}
@@ -107,13 +109,13 @@
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {O}}
+        child {node[EOW] {O}}
       }
       child {node [fill=red!30] {S}
         child {node [label=left:$\to$] {O}
-          child {node {N}}
+          child {node[EOW] {N}}
         }
-        child {node {U}}
+        child {node[EOW] {U}}
       };
     \end{tree}
     \begin{tab}
@@ -136,13 +138,13 @@
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {O}}
+        child {node[EOW] {O}}
       }
       child {node [fill=red!30] {S}
         child {node {O}
-          child {node [label=left:$\to$] {N}}
+          child {node [label=left:$\to$, EOW] {N}}
         }
-        child {node {U}}
+        child {node[EOW] {U}}
       };
     \end{tree}
     \begin{tab}
@@ -164,13 +166,13 @@
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {O}}
+        child {node[EOW] {O}}
       }
       child {node [fill=red!30] {S}
         child {node {O}
-          child {node {N}}
+          child {node[EOW] {N}}
         }
-        child {node [label=left:$\to$] {U}}
+        child {node [label=left:$\to$, EOW] {U}}
       };
     \end{tree}
     \begin{tab}
