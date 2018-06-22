@@ -26,13 +26,14 @@
 
 \begin{twosteps}
   \step{
+		Etape 1
     \begin{tree}
       \node {-}
       child {node [fill=red!30,label=left:$\to$] {N}
-        child {node {L}}
+        child {node {O}}
       }
       child {node {S}
-        child {node {L}
+        child {node {O}
           child {node {N}}
         }
         child {node {U}}
@@ -40,20 +41,23 @@
     \end{tree}
     \begin{tab}
       \hline
-      \nop{}	& L	& N\\
+      \nop{} & - & O & N\\
       \hline
-      N		& 1	& 1\\
+      -		& 0	& 1 & 2\\
+      \hline
+      N		& 1	& 1 & 1\\
       \hline
     \end{tab}
   }% \step
   \step {
+		Etape 2
     \begin{tree}
       \node {-}
       child {node [fill=red!30] {N}
-        child {node [label=left:$\to$] {L}}
+        child {node [label=left:$\to$] {O}}
       }
       child {node {S}
-        child {node {L}
+        child {node {O}
           child {node {N}}
         }
         child {node {U}}
@@ -61,11 +65,13 @@
     \end{tree}
     \begin{tab}
       \hline
-      \nop{}	& L	& N\\
+      \nop{} & - & O & N\\
       \hline
-      N		& 1	& 1\\
+      -		& 0	& 1 & 2\\
       \hline
-      L		& 1	& 1\\
+      N		& 1	& 1 & 1\\
+      \hline
+      O		& 2	& 1 & 1\\
       \hline
     \end{tab}
   }% \step
@@ -73,13 +79,14 @@
 
 \begin{twosteps}
   \step{
+		Etape 3
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {L}}
+        child {node {O}}
       }
       child {node [fill=red!30,label=left:$\to$] {S}
-        child {node {L}
+        child {node {O}
           child {node {N}}
         }
         child {node {U}}
@@ -87,20 +94,23 @@
     \end{tree}
     \begin{tab}
       \hline
-      \nop{}	& L	& N\\
+      \nop{} & - & O & N\\
       \hline
-      S		& 1	& 2\\
+      -		& 0	& 1 & 2\\
+      \hline
+      S		& 1	& 1 & 2\\
       \hline
     \end{tab}
   }% \step
   \step {
+		Etape 4
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {L}}
+        child {node {O}}
       }
       child {node [fill=red!30] {S}
-        child {node [label=left:$\to$] {L}
+        child {node [label=left:$\to$] {O}
           child {node {N}}
         }
         child {node {U}}
@@ -108,11 +118,13 @@
     \end{tree}
     \begin{tab}
       \hline
-      \nop{}	& L	& N\\
+      \nop{} & - & O & N\\
       \hline
-      S		& 1	& 2\\
+      -		& 0	& 1 & 2\\
       \hline
-      L		& 1	& 2\\
+      S		& 1	& 1 & 2\\
+      \hline
+      O		& 2	& 1 & 2\\
       \hline
     \end{tab}
   }% \step
@@ -120,13 +132,14 @@
 
 \begin{twosteps}
   \step {
+		Etape 5
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {L}}
+        child {node {O}}
       }
       child {node [fill=red!30] {S}
-        child {node {L}
+        child {node {O}
           child {node [label=left:$\to$] {N}}
         }
         child {node {U}}
@@ -134,24 +147,27 @@
     \end{tree}
     \begin{tab}
       \hline
-      \nop{}	& L	& N\\
+      \nop{} & - & O & N\\
       \hline
-      S		& 1	& 2\\
+      -		& 0	& 1 & 2\\
       \hline
-      L		& 1	& 2\\
+      S		& 1	& 1 & 2\\
       \hline
-      N		& 2	& 1\\
+      O		& 2	& 1 & 2\\
+      \hline
+      N		& 3	& 2 & 1\\
       \hline
     \end{tab}
   }% \step
   \step {
+		Etape 6
     \begin{tree}
       \node {-}
       child {node {N}
-        child {node {L}}
+        child {node {O}}
       }
       child {node [fill=red!30] {S}
-        child {node {L}
+        child {node {O}
           child {node {N}}
         }
         child {node [label=left:$\to$] {U}}
@@ -159,11 +175,13 @@
     \end{tree}
     \begin{tab}
       \hline
-      \nop{}	& L	& N\\
+      \nop{} & - & O & N\\
       \hline
-      S		& 1	& 2\\
+      -		& 0	& 1 & 2\\
       \hline
-      U		& 2	& 2\\
+      S		& 1	& 1 & 2\\
+      \hline
+      U		& 2	& 2 & 2\\
       \hline
     \end{tab}
   }% \step
@@ -179,6 +197,6 @@
   : étape courante
 \end{flushright}
 \begin{center}
-  \textit{Recherche du mot ``ln" dans le dictionnaire \{``nl", ``sln",
+  \textit{Recherche du mot ``on" dans le dictionnaire \{``no", ``son",
     ``su"\}}.
 \end{center}
