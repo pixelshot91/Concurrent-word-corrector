@@ -71,9 +71,6 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 		std::vector<std::thread> threads;
 		for (auto n = 0; n < nb_threads; n++)
 			threads.emplace_back([&dic, &data]() {
-				// std::for_each(data.begin() + 0 * n,
-				// data.begin() + 1 * n,
-				// std::bind(&IDictionary::search, &dic, _1));
 				for (size_t i = 0; i < NQUERIES * 70 / 100;
 				     i++) {
 					size_t index =
@@ -83,9 +80,6 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 			});
 		for (auto n = 0; n < nb_threads; n++)
 			threads.emplace_back([&dic, &data]() {
-				// std::for_each(data.begin() + 0 * n,
-				// data.begin() + 1 * n,
-				// std::bind(&IDictionary::search, &dic, _1));
 				for (size_t i = 0; i < NQUERIES * 15 / 100;
 				     i++) {
 					size_t index =
@@ -95,9 +89,6 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 			});
 		for (auto n = 0; n < nb_threads; n++)
 			threads.emplace_back([&dic, &data]() {
-				// std::for_each(data.begin() + 0 * n,
-				// data.begin() + 1 * n,
-				// std::bind(&IDictionary::search, &dic, _1));
 				for (size_t i = 0; i < NQUERIES * 15 / 100;
 				     i++) {
 					size_t index =
@@ -109,8 +100,6 @@ BENCHMARK_DEFINE_F(BMScenario, NoAsync_MT)(benchmark::State& st)
 		for (std::thread& t : threads)
 			t.join();
 	}
-	// std::cout << "Counter = " << dic.counter << std::endl;
-
 	st.SetItemsProcessed(st.iterations() * NQUERIES * nb_threads);
 }
 

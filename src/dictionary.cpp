@@ -17,8 +17,6 @@ dictionary::dictionary(const std::initializer_list<std::string>& init)
 
 void dictionary::init(const std::vector<std::string>& word_list)
 {
-	// std::lock_guard l(m)s
-
 	trie.reset(new Node("-"));
 	for (const std::string& s : word_list)
 		trie->insert(s.data());

@@ -79,14 +79,14 @@ système de ticket.
 Il y a un compteur pour chaque type d'opération : search, insert et
 erase.
 Un opération d'un type ne peut pas s'exécuter si d'autre opérations d'un
-autre type sont en cours d'execution: on ne peut pas faire un search
-d'un mot avant d'avoir executé toutes les insertions au cas ou ce mot
-serait justement inséré.
+autre type sont en cours d'execution. Par exemple, on ne peut pas faire un search
+d'un mot avant d'avoir executé toutes les insertions car cela pourrait changer le
+résultat de la recherche.
 
 Le thread désirant éxécuter l'opération search incrémente le compteur de
 search en attente mais ne commence pas tout de suite.
 Il utilise un \texttt{std::condition\_variable} pour attendre que les
-autres opérations soit fini.  Dès qu'il n'y a plus d'insertion ni de
+autres opérations soit finies.  Dès qu'il n'y a plus d'insertion ni de
 suppression, toutes les recherches sont executées en même temps.
 
 \end{document}

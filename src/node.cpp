@@ -23,7 +23,6 @@ void Node::lv(lv_ctx& lv_ctx, const int l) const
 
 		if (l > 1 && c > 1 && s[l] == lv_ctx.query[c - 1] &&
 		    s[l - 1] == lv_ctx.query[c]) {
-			// std::cout << "SWAP possible" << std::endl;
 			min = std::min(
 			    min,
 			    (char)(array[width * (l - 2) + (c - 2)] + cost));
